@@ -1,0 +1,105 @@
+\documentclass[12pt,a4paper,pdftex,twoside,liststotoc,listsleft]{scrartcl}
+
+\newcommand{\myauthor}{Johannes Steger, Egon Stemle}
+\newcommand{\mytitle}{Infrastructure for Construction and Annotation of Web Corpora}
+
+%%%% package imports (order matters)
+\usepackage{graphicx}
+\usepackage{fullpage}
+\usepackage{url}
+\usepackage{natbib}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{tabularx}
+\usepackage[pdftex]{color}
+\usepackage[pdftex,frenchlinks=true,setpagesize=false,colorlinks=false]{hyperref}
+
+%%%% fancy & options
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\renewcommand{\footrulewidth}{0.5pt}
+\renewcommand{\headrulewidth}{0.5pt}
+\setlength{\headheight}{20pt}
+\setlength{\headsep}{20pt}
+\fancyhf{}
+\fancyfoot[CE]{KrdWrd}
+\fancyfoot[CO]{\mytitle}
+\fancyhead[LE,RO]{\bfseries\thepage}
+\fancyhead[RE]{\bfseries\leftmark }
+\fancyhead[LO]{\bfseries\rightmark }
+%%%% hyper & options
+\definecolor{darkblue}{rgb}{0,0,0.66}
+\definecolor{darkred}{rgb}{0.4,0,0}
+\hypersetup{ 
+pdftitle={\mytitle},
+pdfauthor={\myauthor},
+pdfsubject={\mytitle},
+pdfproducer={pdflatex, inkscape, gnuplot},
+plainpages=false,
+frenchlinks=true,
+pdfborder=0 0 0
+%,
+%linkcolor=darkblue,
+%pagecolor=darkblue,
+%urlcolor=darkblue,
+%citecolor=darkred
+}
+
+%%%% indexing options
+\setcounter{tocdepth}{3}
+\setcounter{secnumdepth}{3}
+\newcounter{lofdepth}
+\setcounter{lofdepth}{3}
+\bibliographystyle{plainnat}
+
+%%%% new commands
+\newcommand{\email}[1]{\href{mailto:#1}{#1}}
+\newcommand{\fig}[4]
+{
+ \begin{figure}[h]
+  \centering
+  \includegraphics[width=#1\textwidth]{./images/#2}
+  \caption{#3}
+  \label{#4}
+ \end{figure}
+}
+
+%%%% typesetting options
+\unitlength10mm
+
+%%%% Title
+
+\title{\mytitle}
+\subject{
+\includegraphics[width=0.1\textwidth]{./images/uos.pdf}\\
+University of Osnabr\"uck \\
+Institute of Cognitive Science \\
+Germany}
+\date{\today}
+\author{\myauthor}
+\publishers{\bigskip \small
+A KrdWrd Report.
+}
+%%%% Doc begins
+\begin{document}
+\maketitle
+
+\begin{abstract}
+The Abstract.
+\end{abstract}
+
+\newpage
+\tableofcontents
+
+\section{Introduction}
+\fig{1.0}{corpflow.pdf}{Flow}{Details}
+\section{Acquisition}
+
+%%%%%%%%%%%%%%% APPENDIX %%%%%%%%%%%%%%%%%%%%%%%%
+\appendix
+\clearpage
+
+\bibliography{report}
+%\listoftables
+%\listoffigures
+\end{document}
