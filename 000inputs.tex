@@ -1,0 +1,35 @@
+\input{010texfoo}
+
+\title{\mytitle}
+
+\begin{document}
+  \maketitle
+  \input{060abstract}
+
+  % set the TOC with larger line spacing
+  \begin{spacing}{1.1}
+  \tableofcontents
+  \end{spacing}
+  \newpage
+  \pagestyle{plain}
+
+  \input{300}
+
+  	\section{\label{sec:systemoverview}System Overview} 
+  	\input{310}
+	
+	\section{\label{sec:preprocessing}Pre-Processing: Harvesting Web Pages}
+	\input{320}
+	
+	\section{\label{sec:manualannotation}Manual Annotation: Classification of Web-Page Content by Human Annotators}
+	\input{330}
+	
+	\section{\label{sec:goldstandard}The Gold Standard: Compilation and Analysis of manually annotated Data}
+	\input{340}
+	
+	%\section{Summary}
+	%\input{350}
+    
+    \clearpage
+    \input{900bib}
+\end{document}

@@ -1,0 +1,50 @@
+\begin{longversion}
+%
+%
+Two fundamental ideas behind this part of the system are:
+firstly, Web pages have a textual representation, namely the text they contain, a structural representation, namely their DOM tree, and a visual representation, namely their rendered view -- all representations should be considered when automatically cleaning Web pages, and consequently, all should be annotated during acquisition of training data for ML tasks.
+Secondly, data acquisition for training of supervised ML algorithms should preserve pristine, unmodified versions of Web pages -- this will help to reproduce results \emph{and} to compare those of different architectures.
+
+% What
+\subsection{Functional Walk-Through}
+
+%What, Who, How, Result
+Gathering a set of sample pages is at the beginning of tagging new data. 
+The process needs to be coordinated by the administrators of the system, i.e.~server level access is needed to make new corpora available for later tagging by users. 
+The Process starts with a list of seed terms which are used to construct an ad-hoc corpus of Web pages where the result is a list of Uniform Resource Locators (URL\footnote{see \cite{URL} for details -- but also \cite{w3.org/Addressing}.}).  
+ 
+%What, Who, How, Result
+The URL list is then \emph{harvested}, i.e.~the according Web pages are downloaded and saved for further processing. 
+This process is coordinated by the administrators of the system and is started as automated batch-job on the server where its input is the URL List and the result is the set of downloaded Web pages and their content.
+
+%What, Who, How, Result
+These Web Pages are then available online to users for tagging, i.e.~there are no constraints on who is able to access these pages; 
+however, keeping track of \emph{who tagged what} requires to differentiate between users, and hence, registration with the system, viz.~logging in. 
+The Web pages are accessible via the KrdWrd Add-on in combination\footnotemark~with the Web Services hosted on \cite[Web Site]{krdwrd.org}.
+\footnotetext{Indeed, the data is accessible with \emph{any} browser -- but the KrdWrd Add-on enhances the experience.}
+
+%What, Who, How, Result
+Users can tag new, alter or redisplay formerly tagged Web pages with the help of the KrdWrd Add-on.
+The KrdWrd Add-on builds upon and extends the functionality of the Firefox \cite{firefox} browser and facilitates the visual tagging of Web pages, i.e.~users are provided with an accurate Web page presentation and annotation utility in a typical browsing environment.
+Readily (or partly) tagged pages are directly sent back to the server for storage in the KrdWrd Corpus data pool and for further processing.  
+
+%What, Who, How, Result
+Updated or newly submitted tagging results are regularly merged, i.e.~submitted results from different users for the same content are processed and compiled into a majority-driven uniform view.
+This automated process uses a \emph{winner takes all strategy} and runs regularly on the server -- without further ado.
+The \emph{merged} content is stored in the KrdWrd data pool and hence, available for browsing, viewing, and analysis by the KrdWrd Add-on\footnotemark[\value{footnote}] and furthermore, it can be used as training data for Machine Learning algorithms. 
+
+
+% What
+\subsection{Implementation Survey}
+
+The KrdWrd Infrastructure consists of several components that bring along the overall functionality of the system. 
+They are run either on the KrdWrd Server or are part of the KrdWrd Add-on and hence, build upon and extend the functionality of the Firefox browser.
+The Server components are hosted on a Debian GNU/Linux \cite{debian.org} powered machine.
+However, the requirements\footnote{These include sed, awk, python, bash, subversion, XULRunner, wwwoffle, apache, R.} are rather limited and many other standard linux - or linux-like - systems should easily suffice, and even other platforms should be able to host the system. 
+Nevertheless, the KrdWrd Add-on strictly runs only as an extension of the Firefox browser, version 3\footnote{But it could be converted into a self-contained XULRunner application.}.
+
+Access to the system is given as HTTP Service hosted on \url{krdwrd.org}, an SSL-certified virtual host running on an Apache Web Server \cite{httpd.apache.org} accompanied by mailing services, a dedicated trac as Wiki and issue tracking system for software development (extended with a mailing extension), and subversion \cite{subversion} as version control system.
+The interfacing between the KrdWrd Add-on and the Web Server is done via CGI \cite{cgi} scripts, which itself are mostly written in the Python programming language \cite{python}.
+%
+%
+\end{longversion}

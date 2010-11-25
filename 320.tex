@@ -1,0 +1,157 @@
+\begin{longversion}
+%
+%
+Generally, pre-processing is the first step to streamline external data for further processing in a customised data-processing pipeline, and in the KrdWrd System it constitutes harvesting data, i.e.~grab Web pages off the web, convert them into UTF-8 encoding \cite{unicode.org}, make links on these pages relative \cite{w3.org/base}, and compile them into a corpus that can be tagged by users.
+
+
+% What, (Why,) How, Result
+\subsection{URL List Generation}
+
+For downloading pages off the Web the KrdWrd System needs to be told \emph{which} pages to grab. But because we are interested in a wide spectrum of layouts we need to scatter the URLs to be fetched over different web sites, i.e.~we are not interested in having a small number of site URLs and then recursively grab these sites but we want a large number of URLs from different sites.
+
+To this end we utilise the BootCaT toolkit\cite{BaroniSilvia2004} to construct an ad-hoc URL list:
+a set of seed terms is used for automated queries against a Web search engine, the top results for querying random combinations of the terms are downloaded and analysed, i.e.~unigram term counts from all retrieved Web pages are compared with the corresponding counts from a reference corpus. 
+In the last step\footnote{Though, this loop can be repeated multiple times with unigram term counts until the corpus of retrieved Web pages reaches a certain size or matches other characteristics.} multi-word terms are extracted and used a seed terms for the query process.
+However, we used the top results from these last multi-word queries as URL List.
+
+
+\paragraph{en d\'{e}tail:}
+We used the BootCaT installation of the Institute of Cognitive Science's Computational Linguistics group at the University of Osnabr\"{u}ck\cite{ikw/CL} -- at the time of writing this was the initial version with the updates from February 2007.
+
+The topic of the seed terms for the BootCaT procedure was ``Nuremberg in the Middle Ages'', the terms were:
+\emph{
+        history,
+        coffee,
+        salt,
+        spices,
+        trade road,
+        toll,
+        metal,
+        silk,
+        patrician,
+        pirate,
+        goods,
+        merchant}, 
+the Internet search engine BootCaT used was Yahoo!\cite{yahoo}, 
+the reference corpus was the British National Corpus (BNC)\footnote{The data was obtained under the terms of the BNC End User Licence. For information and licensing conditions relating to the BNC, please see the web site at \url{http://www.natcorp.ox.ac.uk}}, 
+and the procedure resulted in 658 URLs from unique domains; 
+note that we departed from the original BootCaT recipe and only allowed one URL per domain.  
+This URL list was passed on to the KrdWrd Harvester -- but, of course, \emph{any} URL list can be feed to the Harvester.
+
+%le fin:
+\noindent \linebreak
+The seed terms, the command sequence, and the URL list can be found at \url{https://krdwrd.org/trac/browser/tags/harvest/canola}.
+
+
+% What, (Why,) How, Result
+\subsection{The KrdWrd App: Harvesting Mode}
+
+The automated downloading of Web content is done by the KrdWrd App in harvesting mode, namely by feeding the App an URL list as input and have it then fetch and store downloaded content for further processing. Moreover this process resolves three significant concerns:
+\begin{description}
+\item[Enforce UTF-8 Character Encoding] for grabbed documents -- character encoding has been the cause for much hassle in data processing, and to eliminate it -- or at least reduce it to a minimum -- we transform \emph{every} document into UTF-8 encoding \cite{unicode.org} and make sure that successive processing steps are UTF-8 aware.
+\item[Change the <BASE> Element] for grabbed documents (or insert one) \cite{w3.org/base, w3.org/Addressing} -- for smooth integration into the KrdWrd system  we change this attribute such that relative URIs are resolved relative to our system. 
+\item[Surround Text with <KW> Elements] in grabbed documents -- these additional elements splits up text: when large amounts of text fall under a single node in the DOM tree, i.e.~when the whole text can only be selected as a whole, these elements loosen this restriction but, on the other hand, do not affect the rendering of the Web page or other processing steps.     
+\end{description}
+
+Finally, the System extracts the textual content of each page and only considers documents of certain text length as appropriate for further processing and discards all others. The rational is that \emph{very} short and \emph{very} long web pages rarely contain useful samples of interesting running text.
+
+\paragraph{en d\'{e}tail:}
+We used the previously generated URL list and fed it to the KrdWrd App in harvesting mode, which then retrieved Web pages via the KrdWrd Proxy (see \ref{sec:proxy}) just as if someone operating a Firefox browser had viewed them. 
+The textual length restriction was set to only allow for a \emph{decent} amount of text, which we thought holds for documents consisting of 500 to 6,000 words\footnote{We used the linux \texttt{wc}\cite{wc} command, i.e.~a word is a string of characters delimited by white space characters.}. 
+Finally, we manually inspected the remaining grabbed pages for problems arising from limitations -- and had to discard two files. 
+Overall, the process resulted in 228 pages that were considered for further processing. 
+
+%le fin:
+\noindent \linebreak
+The currently used 'harvester' can be found at \url{https://krdwrd.org/trac/browser/trunk/src/app/harvest.sh}.
+
+
+% What, (Why,) How, Result
+\subsection{\label{sec:proxy}The KrdWrd Proxy} 
+
+The KrdWrd Harvester and the KrdWrd Add-on make all Internet connections through the KrdWrd Proxy.
+This storage fills up with the harvested Web pages but also with all directly-linked material, which is included via absolute or relative links, or e.g.~\emph{generated} by scripts.
+Often, this `additional' material is considered superfluous and therefore discarded; 
+moreover, the non-textual content of Web pages is often stripped off -- or the textual or structural content altered. 
+See e.g.~\cite{PotaModule,cleaneval/annotation_guidelines}, or more generally \cite{WAC2,WAC3,WAC4}. 
+
+Unfortunately, this renders it very difficult -- or even impossible -- to compare work in cases where one utilises data that is not available any more or only in an altered form.
+This is to say indeed, in the end we \emph{also} want text but with different requirements of competing systems the base material must be pristine, i.e.~the most `natural' and the least modified version of data should be conserved. 
+To this end, we utilise the World Wide Web Offline Explorer (wwwoffle)\cite{wwwoffle} as a proxy, which can be operated in two modes: \emph{online} and \emph{offline}. 
+
+\paragraph{wwwoffle Online Mode} allows for 
+caching of pages that are downloaded for later review, 
+use with one or more external proxies, 
+control over which pages cannot be accessed and 
+which pages are not to be stored in the cache.
+
+\paragraph{wwwoffle Offline Mode} allows for
+use of normal browser to follow links,
+control which pages can be requested, and
+for non-cached access to Intranet servers. 
+
+\paragraph{wwwoffle generally} allows for a
+searchable cache index with the addition of included programs, and
+viewable indexes sorted by name, date, server domain name, type of file.
+The configuration is done in a single configuration file, which can be accessed via an interactive web page to allow editing; user customisable error and information pages are also easily configurable. 
+
+\noindent\linebreak
+During pre-processing the KrdWrd Online Proxy is used; it runs as a daemon and responds only to internal requests but material that is downloaded in online mode will be available for requests in offline mode.
+
+The KrdWrd Offline Proxy runs as a daemon and responds to network requests from the Internet, it is publicly available\footnote{with the exception that there exists a \emph{dummy} login\ldots}, and can be accessed via \url{proxy.krdwrd.org:8080}. 
+This proxy does not fetch new pages into the KrdWrd Cache, i.e.~all Web page request coming from the client computer, e.g.~from a user surfing the net with an installed and enabled KrdWrd Add-on, will be filtered and only requests for content that had previously been downloaded in online mode will be allowed. 
+The offline mode is automatically configured by the KrdWrd Add-on .
+
+The Proxy data pool holds unmodified, re-loadable (near\footnote{Dynamically generated links are challenging and may lead to missing content.}) copies of all the Web pages from within the KrdWrd Corpus. 
+
+\paragraph{en d\'{e}tail:}
+We set-up and configured two instances of wwwoffle on the KrdWrd Host;
+one publicly available, operating in offline mode and constituting the KrdWrd Offline Proxy, and one for use by the KrdWrd Harvester, operating in online mode and constituting the KrdWrd Online Proxy. 
+The two instances are operational at the same time and they share the same data pool; this is easily possible and does not result in data inconsistencies because the offline proxy only reads data from the pool -- it never writes data to the pool. Additionally, we configured the online proxy to \emph{never} re-grab material, i.e.~the first encounter of new content will be the one the systems keeps.
+
+%le fin:
+\noindent \linebreak
+The currently used configuration can be found at \url{https://krdwrd.org/trac/browser/trunk/src/utils/wwwoffle}.
+
+%At first glace the krdwrd project and projects archiving Web content have a lot in common with search engines: they all are in need of a high performance web-crawler, i.e.~a program for autonomously downloading vast amounts of web pages;
+%However, whereas crawlers for archive and search engine projects given a set s of seed \emph{Uniform Resource Locators} (URLs), repeatedly remove URLs from the set, downloads the corresponding page, extract all the URLs contained in it, and adds any previously unknown URLs to the set, a crawler in the Web as Corpus (WaC) context only gets an inital set of URLs and downloads the corresponding pages of this set.
+
+
+%    >>> The Archive 
+%    There are many different kinds of dynamic pages, some of which are easily stored in an archive and some of which fall apart completely. When a dynamic page renders standard html, the archive works beautifully. When a dynamic page contains forms, JavaScript, or other elements that require interaction with the originating host, the archive will not contain the original site's functionality.
+
+%    Why are some sites harder to archive than others?
+
+%    If you look at our collection of archived sites, you will find some broken pages, missing graphics, and some sites that aren't archived at all. Here are some things that make it difficult to archive a web site:
+
+%        * Robots.txt -- We respect robot exclusion headers.
+%        * Javascript -- Javascript elements are often hard to archive, but especially if they generate links without having the full name in the page. Plus, if javascript needs to contact the originating server in order to work, it will fail when archived.
+%        * Server side image maps -- Like any functionality on the web, if it needs to contact the originating server in order to work, it will fail when archived.
+%        * Unknown sites -- The archive contains crawls of the Web completed by Alexa Internet. If Alexa doesn't know about your site, it won't be archived. Use the Alexa Toolbar (available at www.alexa.com), and it will know about your page. Or you can visit Alexa's Archive Your Site page at \url{http://pages.alexa.com/help/webmasters/index.html#crawl_site}.
+%        * Orphan pages -- If there are no links to your pages, the robot won't find it (the robots don't enter queries in search boxes.)
+
+%    As a general rule of thumb, simple html is the easiest to archive.
+%    <<<
+
+%    there are three frameworks worth mentioning -- we explixitly only talk about building archives of Web content and not, e.g.~about building a cache for performace reasons, or about caching content for traffic analyses or debuigging pruposes.
+
+%    archive org:
+%    http://webteam.archive.org/confluence/display/Heritrix/Home
+%    why not use a well-developed tool to build up a local cache? (well, because - for the time being - wwwoffle does the job and was easier to set-up. but using archive.org's stuff should be considered...)
+%
+%    http://www.httrack.com/ and (in particular) http://www.httrack.com/proxytrack/
+%    interesting approach, available on many platforms, integrated klicki-bunti thingything, etc. ...and why not use this one? hm, cf. further up... 
+
+
+%    A very interesting aproach in this respect is the Internet Archive at [http://www.archive.org] whose purpose is to build a digital library of Internet sites -- this includes archiving the same site at different points in time. 
+%    The Archive develops software tailored to their needs, e.g.~the Heritrix archival crawler [\url{http://crawler.archive.org/}] "is the Internet Archive's open-source, extensible, web-scale, archival-quality web crawler project."  
+%    , which could suit the needs for the Web as Corpus (WaC) community. However, our inital evaluation of was that the main goal of The Archive is 
+
+%    "Our breadth-first crawl together with heuristics for normalizing URLs prevents us from going too deeply into uninteresting data." [ Report 174 Towards Web-scale Web Archaeology
+%    by Shun-tak A. Leung, Shun-tak A. Leung, Sharon E. Perl, Sharon E. Perl, Raymie Stata, Raymie Stata, Janet L. Wiener, Janet L. Wiener ]
+%
+%    [Known HTTP Proxy/Caching Problems (http://tools.ietf.org/html/rfc3143)]
+%
+%
+\end{longversion}
+

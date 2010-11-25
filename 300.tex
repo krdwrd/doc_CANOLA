@@ -1,0 +1,16 @@
+\begin{longversion}
+The KrdWrd Project\cite{krdwrd.org} deals with the design of an abstract architecture for 
+A)~the unified treatment of Web data for automatic processing, \emph{without} neglecting visual information, on annotation and processing side and 
+B)~the appropriate annotation tool to gather data for supervised processing of such data.
+
+The Project comprises an implementation appropriate for pre-processing and cleaning of Web pages, where users are provided with accurate Web page presentations and annotation utilities in a typical browsing environment, while machine learning (ML) algorithms also operate on representations of the visual rendering of Web pages.
+The system also preserves the original Web documents and all the additional information contained therein to make different approaches comparable on identical data.
+
+The system is sketched in \cite{StegerStemle2009}.
+
+For training the KrdWrd ML Engine, a substantial amount of hand-annotated data, viz.~Web pages, are needed. 
+Following, we present the parts of the system that cover the acquisition of training data, i.e.~the steps before training data can be fed into a ML Engine. 
+
+Then, after an overview of the sequence of steps needed to gather new training data in \ref{sec:systemoverview}, an in-depth description of the processing steps \emph{before} Web pages can be presented to annotators in \ref{sec:preprocessing}, presentation of the actual tool annotators use in \ref{sec:manualannotation}, and the compilation of their submitted results in \ref{sec:goldstandard}, we will be ready to feed the KrdWrd Gold Standard to a ML Engine.
+%An exemplification, the KrdWrd ML Engine, is covered in \ref{cha:krdwrdsys2}.
+\end{longversion}

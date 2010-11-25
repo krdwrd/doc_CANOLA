@@ -1,0 +1,130 @@
+\begin{longversion}
+%
+%
+- frameworks 4 tagging
+- gold: welche seiten entfernt
+
+\paragraph{What was done}
+\begin{itemize}
+\item A Firefox add-on: receive data from the server and send it back  
+\item A server: provide pages to clients and receive tagged pages (from the individual users)
+\item Refined annotation guidelines: incorporate feed-back from CleanEval-1 taggers
+\item Manual for the add-on: provide a means of getting to know the tool
+\item Interactive online tutorial: provide a means to get hands-on experience using the add-on while applying the tagging guidelines
+\item An I2CL assignment: gather Gold Standard annotations for Web pages  
+\end{itemize}
+
+\paragraph{What was used}
+\begin{itemize}
+\item A shared Debian/GNU Linux Server with a shared Apache Web server
+\item A dedicated Trac, i.e.~an enhanced wiki and issue tracking system for software development projects
+\item A dedicated svn, i.e.~an open-source revision control system for all documentation and all programm code
+\item A WWWOffle proxy server to keep a (quite) pure version of the pages to be tagged
+\item A XULRunner application to harvest the pages \textit{through} the proxy -- as if they were viewed by a user
+\item JavaScript, Python, Perl, Bash-scripting for the necessary front- and back-ends
+\item A SQLite3 self-contained, embeddable, zero-configuration SQL database engine for the (less) pure version of the pages to be tagged and the users' annotations
+\item \ldots
+\end{itemize}
+
+
+
+\paragraph{Bonus: FIASCO Corpus}
+    The FIASCO corpus was compiled from the original ``Osnabr\"{u}ck Cleaneval Gold Standard'' [Bauer et al. Sec.4], by combining the re-alignment method from then with the regular \nobreak{KrdWrd} system pipeline. The re-alignment was necessary because [Bauer et al.]
+    \begin{quote}
+    [\ldots] made the mistake of using the same annotation strategy as the official
+    CLEANEVAL data set. This meant that all internal structural information of the HTML
+    document was lost in the manual cleanup process (since the cleanup started from text
+    dumps of the pages) and the gold standard was therefore not directly usable as training
+    data for [their] machine-learning algorithm.
+    \end{quote}
+
+    The original 158 wget\cite{wget} dumped files\footnote{available from \url{https://krdwrd.org/pages/dat/fiasco_en/}} were copied to an \emph{external} host and their locations were used as URL List, i.e.~the files and all the embedded or linked content was fetched through the online-proxy -- and was then available via the off-line proxy.
+    However, instead of adding the corpus to the KrdWrd system the files were processed along the original re-alignment pipeline.
+    The HTML output of the KrdWrd system was converted to valid XHTML using the open source utility TagSoup\url{http://ccil.org/~cowan/XML/tagsoup/} -- a SAX parser written in Java and designed to process even extremely malformed HTML sources.
+    In addition, some rule based cleanup was done, viz.~inline Javascript (marked with the \texttt{<script>} tag), style information and HTML comments were removed.
+    Finally, paragraphs not contained in proper \texttt{<p>} elements but delimited by line breaks or marked with empty \texttt{<br/>} tags were replaced with proper paragraph elements.
+    Needless to say that these steps -- other than following the original pipeline -- are not necessary for the KrdWrd system.
+
+    The resulting XHTML files were automatically\footnote{The algorithm first extracted the textual content under each node of the document's DOM tree.
+    It then compared paragraphs in the cleaned text with nodes in the DOM tree by calculating Dice coefficients measuring word overlap between each paragraph and the textual content below each tree node.
+    If this process found a node that was sufficiently similar to a clean paragraph, the node was marked as clean.
+    The information was then propagated up and down the tree to previously selected target nodes, i.e.~nodes in the DOM tree were 10\% of their -- including all their children's --  textual content was contained in text nodes among its \emph{immediate} children, in the following way:
+    all target nodes contained in a clean subtree were marked as clean;
+    all target nodes that dominated more clean than non-clean nodes were marked as clean, too.
+    All remaining target nodes were marked as dirty.} aligned with the manually annoteated text files and the result was transformed for the KrdWrd system namely,
+    dirty nodes were marked as ``Junk'', clean nodes were marked as ``Good'', and all others were marked as ``Uncertain''.
+    %translation matrix (though it's not quite clear where these 'two' alignments come from):
+    %clean='1' -> krdwrd-tag-2 (uncertain)
+    %clean='2' & target='1' -> krdwrd-tag-3 (good)
+    %clean='3' -> krdwrd-tag-3 (good)
+    The output obtained in this way is not perfect but for many pages it works quite well and some manual refinement is easily possible.
+
+
+    original 158 file
+    now 134 files
+
+    missing files
+
+
+    cf. \url{http://en.wikipedia.org/wiki/Character_encodings_in_HTML}
+    \begin{verbatim}
+    documents in the corpus are stripped of their root element to avoid - at least some - (en- and) decoding difficulties: when requesting HTML documents from a server the encoding  can be defined in three ways (and we found instances where the encoding was defined multiple times - with diferent content). 
+    - as part of the HTTP-response (Content-Type:)
+    - as part of the <HEAD> element
+    - as part of the XML preamble (for XHTML only)
+
+
+    !!! alternative text of images (img alt txt) has no initial <kw> and/or propagated krdwrd-tag
+
+    <p class='krdwrd-tag-3' target='1'>
+    <b class='krdwrd-tag-2'>Aperture:</b> Light passing through a camera lens must pass through a hole called an aperture. The aperture�[34m~@~Ys size can hanged manually or automatically by the camera. The size of the aperture affects how much light gets through the lens and onto the film or sensor. Very small apertures increase the depth of field and require longer exposure times because very little light reaches the sensor. And very large apertures decrease the depth of field and allow for shorter exposure times. Aperture is measured by a number call the <b>f-stop.</b>
+
+    \end{verbatim}
+    (harvest.py)
+    - relativize base-url
+    - discard pages with little text content
+
+
+    \begin{verbatim}
+    check baseref:
+    14_merged.xhtml.html
+    36_merged.xhtml.html
+    66_merged.xhtml.html
+    107_merged.xhtml.html
+    287_merged.xhtml.html
+
+13 (blank)
+86 (garbage text)
+212 (content missing)
+213 (content missing)
+217 (content missing)
+220 (content missing)
+222 (content missing)
+223 (content missing)
+227 (content missing)
+
+    \end{verbatim}
+
+
+\paragraph{BONUS: Victor Corpus}
+
+%
+
+%\subsection{\label{subsec:corpusannotation}Corpus Annotation}
+%the data from the DB made available by python-foo backend, proxy in off-line mode, add-on for highlighting, marking, submitting, resubmitting, etc. pages 
+
+%\subsubsection{\label{subsec:annotationinspection}Annotation Inspection}
+%corpus analysis - mostly administrative tools on the server
+%corpus analysis, stats, etc.
+
+%\subsection{\label{subsec:supervisedtraining}Supervised Training}
+%\subsubsection{\label{subsec:featureextraction}Feature Extraction}
+%- training + classification
+% - extraxtion tools
+% - learning tools
+
+%\subsection{\label{subsec:sweepingunseencontent}Sweeping Unseen Content}
+%
+%
+\end{longversion}
+

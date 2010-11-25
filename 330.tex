@@ -1,0 +1,117 @@
+\begin{longversion}
+%
+%
+The pre-processed data is now ready to be processed by annotators, and we will present the setting in which the annotated data, the foundation for the gold standard, was acquired.
+
+The KrdWrd System incorporates the KrdWrd Add-on, an extension for the Firefox browser, which facilitates the visual tagging of Web pages. 
+However, users also need to be told \emph{what} to tag \emph{how} -- therefore, a refined version of the official `CLEANEVAL: Guidelines for annotators' \cite{cleaneval/annotation_guidelines} is provided, and -- additionally -- users are encouraged to work through a small tutorial to get acquainted with different aspects of how to apply the guidelines to real-world Web pages.
+The snag of finding people to actually put the system into use was kindly solved by the lecturers of the \emph{Introduction to Computational Linguistics} class of 2008 from the Cognitive Science Program at the University of Osnabr\"{u}ck by means of an homework assignment for students.
+
+
+% What, (Why,) How, Result
+\subsection{\label{sec:addon}The KrdWrd Add-on: An Annotation Platform}
+The KrdWrd Add-on receives data from the server, modifies the rendering of Web pages by highlighting selected text, supports the tagging of different parts of a page differently, and finally, sends an annotated page back to the server for storage and subsequent processing.
+
+It extends the functionality of the Firefox browser with a status-bar menu where -- beside some administrative tasks -- the user may choose to put the current browser tab into \textit{tracking mode}.
+In this mode pre-defined colour coded tags are integrated into the familiar view of a Web page
+A)~to highlight the part of the page where the mouse is hovering over and thereby, is subject to tagging, and
+B)~to highlight the already tagged parts of the page.
+
+The annotation process is straightforward (cf.~figure \ref{fig:addon} for a partly annotated page): 
+\begin{enumerate}
+\item Users move the mouse over the Web page and the block of text \emph{under} the mouse pointer is highlighted
+(Sometimes this block will be rather small, sometimes it may cover large portions of text),
+\item Users assign tags to the highlighted blocks by either using assigned keyboard shortcuts or via entries in the context menu (Afterwards, these blocks stay coloured in the respective colours of the assigned tags),
+\item Users submit the page, i.e.~the Web page \emph{and} the incorporated tags are transfered to the server -- this is done by pressing a shortcut or via an entry in the status-bar menu  
+(The tagged page, or a partly tagged page, for that matter, can be re-submitted to the server), and
+\item The KrdWrd System serves a new, untagged page for tagging\footnote{This new page is randomly selected among the set of pages with the lowest count of aggregated submissions per user, i.e.~at large, the submissions will be evenly distributed over the corpus -- but cf.~\ref{fig:submsperpage}}.
+\end{enumerate}
+
+\fig{.80}{addon2}{We used the lovely colour fuchsia to highlight the part of the page where the mouse is hovering over, and the colours red, yellow, and green\footnotemark~for the already tagged parts, where red corresponded to \emph{Bad}, yellow to \emph{Unknown}, and green to \emph{Good} (cf.~\ref{sec:guidelines} for details).}{fig:addon} 
+\footnotetext{\textcolor{fuchsia}{fuchsia} -- there is a short story behind this color: \url{https://krdwrd.org/trac/wiki/KrdWrd} -- \textcolor{red}{red}, \textcolor{yellow}{yellow}, and \textcolor{green}{green}, respectively}
+Furthermore, the KrdWrd Add-on is accompanied by a manual \cite{krdwrd.org/manual}.
+It explains how to install the Add-on, get started with tagging pages, how to actually tag them, i.e.~it includes the annotation guidelines, and also gives some tips \& tricks on common tasks and problems.
+
+%le fin:
+\noindent \linebreak
+The Add-on is available from \url{https://krdwrd.org/trac/wiki/AddOn}.
+
+
+% What, (Why,) How, Result
+\subsection{\label{sec:guidelines}The KrdWrd Annotation Guidelines}
+The KrdWrd Annotation Guidelines specify which tag should be assigned to particular kinds of text. 
+We used the CleanEval (CE) annotation guidelines as a start (cf. \cite{cleaneval/annotation_guidelines}), and made a few substantial changes however, because we realised that there were several cases in which their guidelines were insufficient.
+
+The most important change we made was the addition of a third tag `uncertain' whereas originally, only the two tags `good' and `bad' were available.
+It had soon become apparent that on some Web pages there were passages that we did not want to be part of a corpus (i.e.~that we did not want to tag `good') but that we did not want to throw out altogether either (i.e.~tag them as `bad'). 
+We also decided to tag all captions as `uncertain'. 
+
+Another rationale behind this introduction of this third tag was that we might want to process this data at a later stage.
+Also note that in \cite{SpoustaMarekPecina2008} other CE participants also used a three-element tag set.
+
+We adopted the following guidelines from the CE contest, and all of these items were supposed to be tagged `bad':
+
+\begin{itemize}
+        \item Navigation information
+        \item Copyright notices and other legal information
+        \item Standard header, footer, and template material that are repeated across (a subset of) the pages of the same site
+\end{itemize}
+
+We modified the requirement to clean Web pages of internal and external link lists and of advertisement slightly: 
+The KrdWrd Guidelines state that \textit{all} \mbox{(hyper-)links} that are \textit{not} part of the text are supposed to be tagged as `bad'. 
+This, of course, includes link lists of various kinds, but preserves links that are grammatically embedded in `good' text. 
+We also restricted ourselves as to discard advertisement from \textit{external} sites only. 
+Some of the pages were pages about certain products, i.e.~advertisement, but we did not want to exclude these texts (if they fulfilled our requirements for `good' text, as defined below).  
+
+The two sorts of text, we did not exclude specifically (as the CE guidelines did), were Web-spam, such as automated postings by spammer or blogger, and cited passages. 
+Instead, we required `good' text to consist of complete and grammatical English sentences that did not contain `non-words' such as file names. 
+That way, we filter out automatically generated text \textit{only if} it is not grammatical or does not make up complete sentences, and keep text that can be useful for information extraction with statistical models.
+
+Our refined annotation guidelines still leave some small room for uncertainties (but probably \textit{all} such guidelines suffer from this problem). 
+We are optimistic, however, that they are a clear improvement over the original CE guidelines and that our Web corpus will only contain complete and grammatical English sentences that contain `normal' words only.
+
+%le fin:
+\noindent \linebreak
+The annotation guidelines are available from \url{https://krdwrd.org/manual/html/}.
+
+
+\subsection{\label{sec:tutorial}The KrdWrd Tutorial: Training for the Annotators}
+For initial practice, we developed an interactive tutorial that can be completed online (as feature of an installed Add-on).
+
+The interactive tutorial can be accessed from the status bar by clicking `Start Tutorial', and is designed to practice the annotation process itself and to learn how to use the three different tags correctly. 
+Eleven sample pages are displayed one after another, ranging from easy to difficult (these are the same samples as in the 'How to Tag Pages' section of the manual).
+
+The user is asked to tag the displayed pages according to the guidelines presented in the manual. 
+We inserted a validation step between the clicking of `Submit' and the presentation of the next page, giving the user feedback on whether or not she used the tags correctly. 
+Passages that are tagged in accordance with our annotations are displayed in a light-coloured version of the original tag, i.e.~text correctly tagged as `bad' will be light-red, `good' text will be light-green, and text that was tagged correctly as `uncertain' will be light-yellow.
+The passages with \textit{differing} annotations are displayed in the colour in which they should have been tagged, using the normal colours, i.e.~saturated red, green, and yellow.
+After clicking `Next Page' on the right top of the screen, the next page will be shown.
+
+If a user should decide to quit the interactive tutorial before having tagged all eleven sample pages, the next time she opens the tutorial, it will begin with the first of the pages that have not been tagged, yet. 
+And should a user want to start the tutorial from the beginning, she can delete previous annotations via `My Stats' in the status bar. 
+Then, the next time the tutorial is opened it will start from the very beginning. 
+By pressing `Start Tutorial' in the status bar during the practice and \textit{before} the submission of the current page, that same page will be displayed again, un-annotated.
+When using `Start Tutorial' \textit{after} a page's submission and before clicking `Next Page' in the notification box at the top, the next page of the tutorial will be shown.
+
+As stated above, it is our goal that the interactive tutorial will help users getting used to the annotation process, and we are also optimistic that it helps understanding and correctly applying the tagging guidelines as presented in the manual.
+
+%%le fin:
+%\noindent \linebreak
+%The tutorial is only available as part of an installed Add-on. 
+
+
+\subsection{\label{sec:assignment}The KrdWrd Assignment: A Competitive Shared Annotation Task}
+Finally, our efforts were incorporated into an assignment for the class `Introduction to Computational Linguistics' where -- from a maximum number of 100 students -- 68 completed the assignment, i.e.~their effort was worth at least 50\% of the assignment's total regular credits.
+The assignment was handed out 7, July, was due 18, July 2008, and consisted of two exercises:
+\begin{enumerate}
+        \item The first task was to complete the interactive online tutorial, i.e.~the students had to go through the eleven sample pages, annotate them, and -- ideally -- think about the feedback. This task was worth 20\% of the credits.
+        \item The second task was to tag pages from our assembled corpus; 15 tagged pages were worth 80\% of the credits and 10 additional pages were worth an extra that was counted towards the credits of all other homework assignments, i.e.~students could make up for `lost' credits\footnote{As a matter of fact, 43 students received the total of 100\% regular credits + 100\% extra credits.}.
+\end{enumerate}
+
+%le fin:
+%\noindent \linebreak
+%The assignment is enclosed in the appendix (cf.~\ref{cha:appendix}). 
+%
+%
+\end{longversion}
+
